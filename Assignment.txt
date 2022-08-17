@@ -1,0 +1,57 @@
+import groovy.json.JsonSluper;
+import java.lang.*;
+import java.io.*;
+
+def result, itrForForeignPlayers=0, itrForWicketKeeper=0, j, p, player;
+def foreignPlayers = new String[4]; //to store 4 foreign players details(name, country)
+def WicketKeeper = new String[4]; //to store atleast one wicket keeper
+def name;
+
+result = new JsonSlurper().parseText("Response"); //consider Response hold complete input json
+def length = result.player.size(); //taking the team players size
+log.info(length);
+
+//to iterate objects of player list and to validate the 4 foriegn players in the team
+log.info("name of 4 foreign players are....");
+for(j=0;j<length;j++){
+String countryOfPlayer = result.player[j].country.toString();
+if(countryOfPlayer != "India"){      //logic to validate the non indian/foreigner team players
+if(itrForForeignPlayers < 4){  
+name = result.player[j].name.toString();
+player = name + ":" + countryOfPlayer;
+foreignPlayers[itrForForeignPlayers] = player;
+log.info(foreignPlayers[itrForForeignPlayers]);
+itrForForeignPlayers++;
+}else{
+break;
+}
+}
+}
+log.info("name of atleast one wicket keeper is....");
+for(p=0;p<length;p++){
+String roleOfPlayer = result.player[p].role.toString();
+if(roleOfPlayer == "Wicket-keeper"){  //logic to validate the onw wicket keeper in the team
+name = result.player[p].name.toString();
+player = name + ":" + roleOfPlayer;
+WicketKeeper[itrForWicketKeeper] = player;
+log.info(WicketKeeper[itrForWicketKeeper]);
+itrForWicketKeeper++;
+}
+}
+if(itrForWicketKeeper == 0){
+log.info("there is no wicket keeper present in team");
+}
+else if(itrForWicketKeeper == 1){
+log.info("only one wicket keeper present in team");
+}else{
+log.info("more than one wicket keeper present in team");
+}
+
+
+
+
+
+
+
+
+
